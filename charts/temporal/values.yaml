@@ -153,9 +153,11 @@ server:
               consistency: "local_quorum"
               serialConsistency: "local_serial"
         sql:
-          driver: "mysql"
-          host: "mysql"
-          port: 3306
+          driver: "postgres12"
+          host: "postgres"
+          port: 5432
+          # database used to connect to so the temporal database can be created
+          defaultdb: "postgres"
           database: "temporal"
           user: "temporal"
           password: "temporal"
@@ -186,6 +188,7 @@ server:
           driver: "mysql"
           host: "mysql"
           port: 3306
+          defaultdb: "postgres"
           database: "temporal_visibility"
           user: "temporal"
           password: "temporal"
