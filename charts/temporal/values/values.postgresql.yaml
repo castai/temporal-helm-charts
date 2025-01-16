@@ -9,11 +9,16 @@ server:
           host: _HOST_
           port: 5432
           database: temporal
-          user: _USERNAME_
+          user: _USER_
           password: _PASSWORD_
-          # for a production deployment use this instead of `password` and provision the secret beforehand e.g. with a sealed secret
-          # it has a single key called `password`
-          # existingSecret: temporal-default-store
+          # for a production deployment use this instead of `password` and/or `user`. The secret needs to be provisioned
+          # beforehand e.g. with a sealed secret. Keys for the user and the password need to be stored in the same secret.
+          # you can specify the secret name and the keys in the following way:
+
+          # existingSecret: existing-secret-name
+          # secretKeyPassword: key of the password in the secret
+          # secretKeyUser: key of the user in the secret
+
           maxConns: 20
           maxConnLifetime: "1h"
           # tls:
@@ -32,11 +37,16 @@ server:
           host: _HOST_
           port: 5432
           database: temporal_visibility
-          user: _USERNAME_
+          user: _USER_
           password: _PASSWORD_
-          # for a production deployment use this instead of `password` and provision the secret beforehand e.g. with a sealed secret
-          # it has a single key called `password`
-          # existingSecret: temporal-visibility-store
+          # for a production deployment use this instead of `password` and/or `user`. The secret needs to be provisioned
+          # beforehand e.g. with a sealed secret. Keys for the user and the password need to be stored in the same secret.
+          # you can specify the secret name and the keys in the following way:
+
+          # existingSecret: existing-secret-name
+          # secretKeyPassword: key of the password in the secret
+          # secretKeyUser: key of the user in the secret
+
           maxConns: 20
           maxConnLifetime: "1h"
           # tls:
@@ -55,6 +65,9 @@ server:
   #   - name: secret-with-certs
   #     mountPath: /path/to/certs/
 
+admintools:
+  enabled: false
+
 cassandra:
   enabled: false
 
@@ -65,18 +78,19 @@ postgresql:
   enabled: true
 
 prometheus:
-  enabled: true
+  enabled: false
 
 grafana:
-  enabled: true
+  enabled: false
   
 elasticsearch:
-  enabled: true
+  enabled: false
 
+# These values control whether to init and upgrade the schema for the temporal and visibility database
 schema:
   createDatabase:
     enabled: true
   setup:
-    enabled: false
+    enabled: true
   update:
-    enabled: false
+    enabled: true
