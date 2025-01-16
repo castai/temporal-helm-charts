@@ -26,6 +26,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Get release tag
+        if: github.event_name == 'release'
+        run: echo "RELEASE_TAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+
       - name: Checkout helm-charts
         if: ${{ github.event_name == 'release' }}
         # The cr tool only works if the target repository is already checked out
@@ -78,6 +82,10 @@ jobs:
       - name: Create helm package
         if: ${{ github.event_name == 'release' }}
         run: |
+          helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+          helm repo add incubator https://charts.helm.sh/incubator
+          helm repo add elasticsearch https://helm.elastic.co  
+          helm repo add grafana https://grafana.github.io/helm-charts
           "${CR_TOOL_PATH}/cr" package "${{ steps.parse-chart.outputs.chartpath }}" --config "${CR_CONFIGFILE}" --package-path "${CR_PACKAGE_PATH}"
           echo "Result of chart package:"
           ls -l "${CR_PACKAGE_PATH}"
@@ -100,7 +108,7 @@ jobs:
       - name: Update helm repo index.yaml
         if: ${{ github.event_name == 'release' }}
         run: |
-          cd helm-charts
+          cd castai-helm-charts
           "${CR_TOOL_PATH}/cr" index --config "${CR_CONFIGFILE}" --token "${{ secrets.HELM_CHARTS_REPO_TOKEN }}" --index-path "${CR_INDEX_PATH}" --package-path "${CR_PACKAGE_PATH}" --push
 
       - name: Commit Chart.yaml changes
@@ -121,7 +129,7 @@ jobs:
       - name: Sync chart with helm-charts github
         if: ${{ github.event_name == 'release' }}
         run: |
-          cd helm-charts
+          cd castai-helm-charts
           git config user.name "$GITHUB_ACTOR"
           git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
           git checkout main
