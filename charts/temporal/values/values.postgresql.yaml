@@ -8,6 +8,8 @@ server:
           driver: "postgres12"
           host: _HOST_
           port: 5432
+          # database used to connect to so the temporal database can be created
+          defaultdb: postgres
           database: temporal
           user: _USER_
           password: _PASSWORD_
@@ -36,6 +38,8 @@ server:
           driver: "postgres12"
           host: _HOST_
           port: 5432
+          # database used to connect to so the visibility database can be created
+          defaultdb: postgres
           database: temporal_visibility
           user: _USER_
           password: _PASSWORD_

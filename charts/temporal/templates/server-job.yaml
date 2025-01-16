@@ -55,7 +55,7 @@ spec:
               {{- if eq $driver "cassandra" }}
           command: ['temporal-cassandra-tool', 'create', '-k', '{{ $storeConfig.cassandra.keyspace }}', '--replication-factor', '{{ $storeConfig.cassandra.replicationFactor }}']
               {{- else if eq $driver "sql" }}
-          command: ['temporal-sql-tool', 'create-database']
+          command: ['temporal-sql-tool', 'create-database', '--defaultdb','{{ $storeConfig.sql.defaultdb }}']
               {{- end }}
           env:
               {{- include "temporal.admintools-env" (list $ $store) | nindent 12 }}
